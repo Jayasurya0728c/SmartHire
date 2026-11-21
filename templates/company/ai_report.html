@@ -1,0 +1,57 @@
+{% extends 'company/company_index.html' %}
+{% block body %}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>🤖 AI Candidate Insights</h2>
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">⬅ Back to Candidates</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 text-center h-100">
+                <div class="card-body">
+                    <img src="{{ student.Photo }}" class="rounded-circle mb-3 border border-3 border-primary" style="width: 120px; height: 120px; object-fit: cover;">
+                    <h4>{{ student.Name }}</h4>
+                    <p class="text-muted mb-1">{{ student.Post }} | {{ student.Place }}</p>
+                    <a href="{{ student.CV }}" target="_blank" class="btn btn-sm btn-outline-primary mt-3">📄 View Original CV</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-lg border-0 h-100">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Resume vs. Reality Check</h5>
+                    <span class="badge bg-success fs-6">Score: {{ report.consistency_score }} / 100</span>
+                </div>
+                <div class="card-body p-4">
+
+                    <h6 class="fw-bold text-primary mb-2">🧠 AI Behavioral Analysis</h6>
+                    <p class="text-secondary">{{ report.analysis }}</p>
+
+                    <hr>
+
+                    <h6 class="fw-bold text-info mb-3">🌟 Detected Soft Skills</h6>
+                    <div class="mb-3">
+                        {% for skill in report.soft_skills %}
+                            <span class="badge bg-info text-dark me-2 p-2 px-3">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <hr>
+
+                    <h6 class="fw-bold text-danger mb-2">🚩 Red Flags / Exaggerations</h6>
+                    {% if report.red_flags == 'None' or report.red_flags == 'none' %}
+                        <div class="alert alert-success py-2">✅ No major exaggerations detected. Candidate appears honest.</div>
+                    {% else %}
+                        <div class="alert alert-danger py-2">⚠️ {{ report.red_flags }}</div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

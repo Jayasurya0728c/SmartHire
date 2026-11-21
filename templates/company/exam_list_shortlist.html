@@ -1,0 +1,34 @@
+{% extends 'company/company_index.html' %}
+{% block body %}
+<div class="container mt-5">
+    <h3 class="mb-4 fw-bold">Select an Exam to View Rankings</h3>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Exam Name</th>
+                    <th>Date Scheduled</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                {% for i in data %}
+                <tr>
+                    <td class="align-middle">{{ forloop.counter }}</td>
+                    <td class="align-middle fw-bold">{{ i.Name }}</td>
+                    <td class="align-middle">{{ i.Date }}</td>
+                    <td class="align-middle">{{ i.Time }}</td>
+                    <td class="align-middle">
+                        <a href="/myapp/company_ranked_candidates/{{ i.id }}/" class="btn btn-primary btn-sm">
+                            <i class="fa fa-trophy"></i> View Leaderboard
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

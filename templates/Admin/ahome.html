@@ -1,0 +1,137 @@
+{% extends 'Admin/home_index.html' %}
+{% block body %}
+
+<style>
+    .admin-glass-card {
+        background: rgba(30, 41, 59, 0.85) !important; /* Slightly brighter glass for contrast */
+        backdrop-filter: blur(15px);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .admin-stat-title {
+        color: #e2e8f0 !important; /* Bright silver/white instead of dark gray */
+        letter-spacing: 1.5px;
+        font-size: 0.85rem;
+    }
+    .admin-stat-number {
+        color: #ffffff !important; /* Pure white */
+        font-size: 2.8rem;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.2); /* Makes the number glow slightly */
+    }
+    /* Forces chart titles to be pure white */
+    .chart-title {
+        color: #ffffff !important;
+        font-size: 1.25rem;
+    }
+</style>
+
+<div class="row mb-5">
+    <div class="col-md-3 mb-3">
+        <div class="card p-4 border-start border-primary border-4 text-center h-100 admin-glass-card">
+            <div class="admin-stat-title fw-bold mb-2">TOTAL CANDIDATES</div>
+            <h2 class="fw-bolder admin-stat-number mb-0">{{ total_candidates|default:"0" }}</h2>
+            <small class="text-success mt-2 fw-bold" style="font-size: 0.9rem;"><i class="fas fa-arrow-up"></i> Active Users</small>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-4 border-start border-success border-4 text-center h-100 admin-glass-card">
+            <div class="admin-stat-title fw-bold mb-2">APPROVED COMPANIES</div>
+            <h2 class="fw-bolder admin-stat-number mb-0">{{ approved_companies|default:"0" }}</h2>
+            <small class="text-success mt-2 fw-bold" style="font-size: 0.9rem;"><i class="fas fa-check-circle"></i> Fully Verified</small>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-4 border-start border-warning border-4 text-center h-100 admin-glass-card">
+            <div class="admin-stat-title fw-bold mb-2">ACTIVE EXAMS</div>
+            <h2 class="fw-bolder admin-stat-number mb-0">{{ active_exams|default:"0" }}</h2>
+            <small class="text-warning mt-2 fw-bold" style="font-size: 0.9rem;"><i class="fas fa-bolt"></i> Live Now</small>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-4 border-start border-info border-4 text-center h-100 admin-glass-card">
+            <div class="admin-stat-title fw-bold mb-2">PLACEMENTS</div>
+            <h2 class="fw-bolder admin-stat-number mb-0">{{ placements|default:"0" }}</h2>
+            <small class="text-info mt-2 fw-bold" style="font-size: 0.9rem;"><i class="fas fa-trophy"></i> Hired via AI</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mb-4">
+        <div class="card p-4 h-100 admin-glass-card">
+            <h5 class="fw-bold mb-4 chart-title">Platform Growth Vector</h5>
+            <canvas id="growthChart" height="120"></canvas>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card p-4 h-100 admin-glass-card">
+            <h5 class="fw-bold mb-4 chart-title">User Distribution</h5>
+            <canvas id="distChart" height="250"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Line Chart
+        new Chart(document.getElementById('growthChart'), {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                datasets: [{
+                    label: 'New Applications',
+                    data: [120, 190, 150, 220, 310],
+                    borderColor: '#a855f7',
+                    backgroundColor: 'rgba(168, 85, 247, 0.2)', /* Made fill slightly more visible */
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.1)' }, /* Brighter grid lines */
+                        ticks: { color: '#e2e8f0', font: { weight: 'bold' } } /* Brighter axis numbers */
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#e2e8f0', font: { weight: 'bold' } }
+                    }
+                }
+            }
+        });
+
+        // Doughnut Chart
+        new Chart(document.getElementById('distChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Candidates', 'Companies'],
+                datasets: [{
+                    data: [{{ total_candidates|default:"0" }}, {{ approved_companies|default:"0" }}],
+                    backgroundColor: ['#6366f1', '#10b981'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#ffffff', font: { weight: 'bold', size: 14 } } /* Brighter legend */
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

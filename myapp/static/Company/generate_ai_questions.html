@@ -1,0 +1,36 @@
+{% extends 'company/company_index.html' %}
+{% block body %}
+
+<div class="container mt-5" id="a">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header bg-dark text-white text-center">
+            <h3 class="font-weight-light my-2">🤖 AI Copilot: Generate Questions</h3>
+        </div>
+        <div class="card-body p-5">
+            <p class="text-muted mb-4">Describe the role, the skills required, and the difficulty level. Our AI will instantly write a tailored exam for your candidates.</p>
+
+            <form action="/myapp/company_generate_ai_questions_post/" method="post">
+                {% csrf_template %}
+                <input type="hidden" name="tid" value="{{ tid }}">
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">Job Requirements / Tech Stack</label>
+                    <textarea class="form-control" name="description" rows="4" placeholder="e.g., We need a Senior Python developer who knows Django, REST APIs, and basic SQL. The questions should be moderately difficult." required></textarea>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">Number of Questions</label>
+                    <input type="number" class="form-control" name="num_questions" min="1" max="15" value="5" required>
+                    <small class="text-muted">Generate up to 15 questions at a time.</small>
+                </div>
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">✨ Generate with AI</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

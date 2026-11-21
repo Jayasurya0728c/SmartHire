@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Hire | System Login</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: #0f172a;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* --- THE MESH + NEURAL CANVAS BACKGROUND --- */
+        .mesh-gradient {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            background-image:
+                radial-gradient(at 20% 30%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 80%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+            animation: meshAnim 10s ease-in-out infinite alternate;
+        }
+
+        #neuralCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 2;
+        }
+
+        @keyframes meshAnim {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        /* --- THE GLASS LOGIN CARD --- */
+        .login-wrapper {
+            position: relative;
+            z-index: 3;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        @keyframes slideUpFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- TYPOGRAPHY & FORMS --- */
+        .brand-title {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            /* Kept light to match your screenshot preference */
+            background: #f0f4f8 !important;
+            border: 1px solid var(--glass-border) !important;
+            color: #1e293b !important;
+            border-radius: 12px !important;
+            padding: 14px 16px !important;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 15px rgba(99,102,241,0.3) !important;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .btn-login {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            padding: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            width: 100%;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        #togglePassword:hover {
+            color: #6366f1 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Layers -->
+    <div class="mesh-gradient"></div>
+    <canvas id="neuralCanvas"></canvas>
+
+    <!-- Login Container -->
+    <div class="login-wrapper">
+        <div class="login-card">
+
+            <div class="text-center mb-4">
+                <!-- LOGO -->
+                <img src="/static/login/images/logo.png" alt="Smart Hire Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);">
+
+                <h1 class="brand-title">SMART HIRE</h1>
+                <!-- FIXED: Brightened the subtitle -->
+                <p class="small" style="color: #94a3b8; letter-spacing: 2px;">SECURE ACCESS PORTAL</p>
+            </div>
+
+            <form method="POST" action="/myapp/login_post/" id="register-form">
+                {% csrf_token %}
+
+                <div class="position-relative">
+                    <i class="fas fa-envelope position-absolute" style="top: 18px; left: 16px; color: #64748b;"></i>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Your Email" style="padding-left: 45px !important;" required>
+                </div>
+
+                <div class="position-relative">
+                    <i class="fas fa-lock position-absolute" style="top: 18px; left: 16px; color: #64748b;"></i>
+                    <input type="password" name="pass" id="pass" class="form-control" placeholder="Password" style="padding-left: 45px !important; padding-right: 45px !important;" required>
+                    <i class="fas fa-eye position-absolute" id="togglePassword" style="top: 18px; right: 16px; color: #64748b; cursor: pointer; transition: 0.3s;"></i>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 small">
+                    <!-- FIXED: Brightened the remember password text -->
+                    <label class="d-flex align-items-center" style="cursor: pointer; color: #cbd5e1;">
+                        <input type="checkbox" name="remember" class="me-2" style="accent-color: #6366f1;"> Remember me
+                    </label>
+                </div>
+
+                <button type="submit" name="signup" class="btn-login mb-3">
+                    INITIALIZE LOGIN <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+
+                <div class="text-center mt-3 border-top border-secondary border-opacity-25 pt-3">
+                    <!-- FIXED: Brightened the don't have an account text -->
+                    <span class="small" style="color: #94a3b8;">Don't have an employer account?</span><br>
+                    <a href="/myapp/company_signup_get/" class="text-info text-decoration-none fw-bold small">Create Company Profile</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Javascript Logic -->
+    <script>
+        // --- 1. VIEW PASSWORD TOGGLE LOGIC ---
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('pass');
+
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+            this.style.color = type === 'text' ? '#6366f1' : '#64748b';
+        });
+
+        // --- 2. NEURAL WEB BACKGROUND LOGIC ---
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        const dotColor = '#00F2FE';
+        const lineBaseColor = '99, 102, 241';
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 1.0;
+                this.vy = (Math.random() - 0.5) * 1.0;
+                this.radius = Math.random() * 2 + 1;
+            }
+
+            update() {
+                if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+                if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+                this.x += this.vx;
+                this.y += this.vy;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 242, 254, 0.5)`;
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.width * canvas.height) / 10000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 130) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(${lineBaseColor}, ${0.3 - distance/130})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        init();
+        animate();
+    </script>
+</body>
+</html>

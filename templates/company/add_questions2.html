@@ -1,0 +1,82 @@
+{% extends 'company/company_index.html' %}
+{% block body %}
+
+<div class="container mt-5" id="a">
+    <h2 class="text-center mb-4 text-white fw-bold">Add Questions to Test</h2>
+    <div class="row">
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100" style="background-color: #1E293B; border-radius: 15px;">
+                <div class="card-header border-0 py-3" style="background-color: rgba(0,0,0,0.2);">
+                    <h4 class="mb-0 text-white">✨ Generate with AI Copilot</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-white-50">Describe the role and skills. Our AI will instantly write a tailored exam.</p>
+
+                    <form method="post" action="/myapp/company_generate_ai_questions_post/">
+                        {% csrf_token %}
+                        <input type="hidden" name="tid" value="{{ id }}">
+
+                        <div class="mb-3">
+                            <label class="form-label text-white fw-bold">Job Requirements / Tech Stack</label>
+                            <textarea class="form-control bg-dark text-white border-secondary shadow-none" name="description" rows="3" placeholder="e.g., Senior Python dev, Django, REST APIs, intermediate difficulty." required style="resize: none;"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-white fw-bold">Number of Questions</label>
+                            <input type="number" class="form-control bg-dark text-white border-secondary shadow-none" name="num_questions" min="1" max="100" value="5" required>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn py-2 fw-bold text-white border-0" style="background: linear-gradient(135deg, #A855F7, #6366F1); border-radius: 10px;">
+                                ✨ Generate Questions
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100" style="background-color: #1E293B; border-radius: 15px;">
+                <div class="card-header border-0 py-3" style="background-color: #3B82F6;">
+                    <h4 class="mb-0 text-white">📁 Bulk Upload via CSV</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-white-50">Already have your own questions? Upload them instantly using a CSV file.</p>
+
+                    <form method="post" action="/myapp/company_add_questions_csv_post/" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ id }}">
+
+                        <div class="mb-4">
+                            <label class="form-label text-white fw-bold">Select CSV File</label>
+                            <input type="file" name="csv_file" class="form-control bg-dark text-white border-secondary shadow-none" accept=".csv" required>
+
+                            <div class="p-3 rounded mt-3" style="background-color: rgba(255,255,255,0.05);">
+                                <p class="text-white-50 mb-0" style="font-size: 0.9rem;">
+                                    <strong class="text-white">Note:</strong> Columns must be: <span class="text-info font-monospace">questions, type, option1, option2, option3, option4, Answer</span>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn py-2 fw-bold text-white border-0" style="background: linear-gradient(135deg, #3B82F6, #8B5CF6); border-radius: 10px;">
+                                Upload and Process
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    textarea::placeholder {
+        color: rgba(255, 255, 255, 0.4) !important;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'company/company_index.html' %}
+{% block body %}
+
+<div class="container mt-5">
+
+<h2>Candidate Results</h2>
+
+<table class="table table-bordered table-striped">
+
+<thead class="table-dark">
+<tr>
+<th>#</th>
+<th>Question</th>
+<th>Correct Answer</th>
+<th>User Answer</th>
+<th>Mark</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for i in results %}
+
+<tr>
+<td>{{ forloop.counter }}</td>
+<td>{{ i.QUESTIONS.questions }}</td>
+<td>{{ i.QUESTIONS.Answer }}</td>
+<td>{{ i.Answer }}</td>
+<td>{{ i.Mark }}</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<hr>
+
+<h2>Candidate Activities</h2>
+
+<table class="table table-bordered table-striped">
+
+<thead class="table-dark">
+<tr>
+<th>#</th>
+<th>Date & Time</th>
+<th>Photo</th>
+<th>Type</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for i in activities %}
+
+<tr>
+<td>{{ forloop.counter }}</td>
+<td>{{ i.Date }} {{ i.time }}</td>
+<td>
+<img src="{{ i.photo }}" width="100" height="100">
+</td>
+<td>{{ i.Type }}</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

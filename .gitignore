@@ -1,0 +1,16 @@
+# Virtual environments
+venv/
+.venv/
+env/
+
+# PyCharm & Python cache
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+
+# Heavy AI model weights (YOLOv8 auto-downloads .pt files when run)
+*.pt
+*.pth
+*.h5
+media/

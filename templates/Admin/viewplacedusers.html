@@ -1,0 +1,96 @@
+{% extends 'admin/home_index.html' %}
+{% block body %}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark">🏆 Placed Candidates</h2>
+        <span class="badge bg-success p-2 fs-6 shadow-sm">{{ data.count }} Candidates Hired</span>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered mb-0">
+                    <thead class="table-dark text-center align-middle">
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 25%;">Candidate Name</th>
+                            <th style="width: 20%;">Company</th>
+                            <th style="width: 20%;">Position</th>
+                            <th style="width: 15%;">Placement Date</th>
+                            <th style="width: 15%;">Analytics</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white text-center align-middle">
+                        {% for i in data %}
+                        <tr>
+                            <td class="fw-bold text-muted">{{ forloop.counter }}</td>
+
+                            <td class="text-start ps-4">
+                                <strong class="text-dark">{{ i.USERS.Name }}</strong><br>
+                                <small class="text-muted">{{ i.USERS.Email }}</small>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-light text-dark border px-3 py-2 shadow-sm">
+                                    <i class="bi bi-building me-1"></i> {{ i.VACANCY.COMPANY.Company_name }}
+                                </span>
+                            </td>
+
+                            <td class="fw-semibold text-secondary">{{ i.VACANCY.Position }}</td>
+
+                            <td>
+                                <small class="text-muted fw-bold">{{ i.Date }}</small>
+                            </td>
+
+                            <td>
+                                <a href="/myapp/company_view_activity/{{ i.VACANCY.id }}/{{ i.USERS.id }}/"
+                                   class="btn btn-info btn-sm text-white shadow-sm fw-bold px-3">
+                                    📊 View Activity
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <h5 class="mb-2"><i class="bi bi-info-circle fs-3 text-secondary"></i></h5>
+                                <h5>No candidates have been placed yet.</h5>
+                                <p class="mb-0">Once recruiters hire candidates, they will appear in this log.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Clean table header styling */
+    .table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding: 15px;
+    }
+
+    /* Custom Info Button */
+    .btn-info {
+        background-color: #0dcaf0;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .btn-info:hover {
+        background-color: #0baccc;
+        transform: translateY(-2px);
+    }
+
+    /* Soften the table borders */
+    .table-bordered > :not(caption) > * > * {
+        border-color: #f1f5f9;
+    }
+</style>
+
+{% endblock %}

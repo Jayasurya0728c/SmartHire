@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Hire | Employer Portal</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- THE DYNAMIC MOVING BACKGROUND --- */
+        .mesh-gradient {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-color: #0f172a;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.12) 0px, transparent 50%);
+            animation: meshAnim 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes meshAnim {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        /* --- GLASS SIDEBAR --- */
+        #sidebar {
+            width: 280px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+        }
+
+        #sidebar::-webkit-scrollbar { width: 5px; }
+        #sidebar::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
+
+        .nav-link {
+            color: #94a3b8 !important;
+            padding: 12px 20px !important;
+            border-radius: 12px;
+            margin: 4px 15px;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary-gradient);
+            color: white !important;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-link i { margin-right: 12px; width: 20px; text-align: center; }
+
+        /* --- MAIN CONTENT AREA --- */
+        #content {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+            min-height: 100vh;
+        }
+
+        /* ==========================================================
+           THE "CSS NUKE" - THIS FORCES ALL SUB-PAGES TO LOOK DYNAMIC
+           ========================================================== */
+
+        .card, .bg-white, .bg-light {
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(15px) !important;
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 20px !important;
+            color: #f8fafc !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+        }
+
+        h1, h2, h3, h4, h5, h6 { color: #ffffff !important; font-weight: 600 !important; }
+        p, span, div { color: #cbd5e1; }
+
+        /* 🔴 FIX: Override Bootstrap's dark text-muted for dark mode */
+        .text-muted {
+            color: #94a3b8 !important;
+        }
+
+        table { color: #f8fafc !important; background: transparent !important; border-color: var(--glass-border) !important; }
+        thead th { background: rgba(0,0,0,0.2) !important; color: #a855f7 !important; border-bottom: 2px solid var(--glass-border) !important; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;}
+        tbody tr { background: transparent !important; transition: 0.2s; }
+        tbody tr:hover { background: rgba(255,255,255,0.05) !important; }
+        td { border-color: var(--glass-border) !important; vertical-align: middle; }
+
+        input, select, textarea, .form-control {
+            background: rgba(0,0,0,0.2) !important;
+            border: 1px solid var(--glass-border) !important;
+            color: white !important;
+            border-radius: 10px !important;
+            padding: 12px !important;
+        }
+        input:focus { border-color: #6366f1 !important; box-shadow: 0 0 10px rgba(99,102,241,0.3) !important; }
+
+        .btn-primary, .btn-success, .btn-info, .btn-dark {
+            background: var(--primary-gradient) !important;
+            border: none !important;
+            border-radius: 10px !important;
+            color: white !important;
+            padding: 8px 16px;
+            font-weight: 600;
+        }
+        .btn-danger { background: linear-gradient(135deg, #ef4444, #b91c1c) !important; border: none !important; }
+    </style>
+</head>
+<body>
+    <div class="mesh-gradient"></div>
+
+    <div class="d-flex">
+        <nav id="sidebar">
+            <div class="p-4 text-center border-bottom border-secondary border-opacity-25 mb-3">
+                <h4 class="fw-bold mb-0" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    <i class="fas fa-building"></i> SMART HIRE
+                </h4>
+                <small class="text-muted fw-bold" style="letter-spacing: 2px;">EMPLOYER PORTAL</small>
+            </div>
+
+            <div>
+                <a href="/myapp/company_index_get/" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
+
+                <p class="text-uppercase text-muted ps-4 mt-4 mb-2" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">Recruitment</p>
+                <a href="/myapp/company_add_vacancy_get/" class="nav-link"><i class="fas fa-plus-circle"></i> Post a Job</a>
+                <a href="/myapp/company_view_vacancy/" class="nav-link"><i class="fas fa-briefcase"></i> Manage Vacancies</a>
+                <a href="/myapp/view_vacancy_request/" class="nav-link"><i class="fas fa-user-clock text-info"></i> View Applications</a>
+
+                <li class="nav-item mb-2" style="list-style: none;">
+                    <a href="/myapp/company_message_list/" class="nav-link d-flex align-items-center">
+                        <i class="fas fa-comment-dots me-3" style="font-size: 1.1rem;"></i>
+                        <span style="font-size: 1rem; font-weight: 500;">Messages</span>
+                    </a>
+                </li>
+
+                <p class="text-uppercase text-muted ps-4 mt-4 mb-2" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">Assessments</p>
+                <a href="/myapp/company_exam_list/" class="nav-link"><i class="fas fa-trophy text-warning"></i> Leaderboards</a>
+
+                <p class="text-uppercase text-muted ps-4 mt-4 mb-2" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">Settings</p>
+                <a href="/myapp/company_view_profile/" class="nav-link"><i class="fas fa-id-card"></i> Company Profile</a>
+                <a href="/myapp/company_view_feedback/" class="nav-link"><i class="fas fa-comments"></i> Student Feedback</a>
+                <a href="/myapp/company_change_password_get/" class="nav-link"><i class="fas fa-lock"></i> Security</a>
+                <a href="/myapp/log_out/" class="nav-link text-danger mt-3"><i class="fas fa-power-off"></i> Logout</a>
+            </div>
+        </nav>
+
+        <div id="content">
+
+            <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-secondary border-opacity-25">
+                <div>
+                    <h3 class="fw-bold mb-0 text-white">{{ request.user.username }} Dashboard</h3>
+                    <p class="mb-0" style="color: #94a3b8;">Manage your AI recruitment pipeline</p>
+                </div>
+
+                <div class="dropdown">
+                    <div class="d-flex align-items-center bg-dark bg-opacity-50 p-2 rounded-pill border border-secondary border-opacity-25" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                        <img src="https://ui-avatars.com/api/?name=HR&background=ec4899&color=fff" class="rounded-circle me-3" width="40">
+                        <div class="me-3">
+                            <div class="fw-bold small text-white">Hiring Manager</div>
+                            <div class="text-success small" style="font-size: 0.7rem;">● AI Active</div>
+                        </div>
+                        <i class="fas fa-chevron-down text-muted me-2"></i>
+                    </div>
+
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow border-secondary border-opacity-25 mt-2" style="border-radius: 12px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px);">
+                        <li><a class="dropdown-item py-2" href="/myapp/company_view_profile/"><i class="fas fa-building me-2 text-primary"></i> Company Profile</a></li>
+                        <li><a class="dropdown-item py-2" href="/myapp/company_change_password_get/"><i class="fas fa-key me-2 text-info"></i> Security Settings</a></li>
+                        <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
+                        <li><a class="dropdown-item py-2 text-danger" href="/myapp/log_out/"><i class="fas fa-power-off me-2"></i> Secure Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            {% block body %}
+
+            <div class="row mb-4">
+                <div class="col-md-3 mb-4">
+                    <div class="card p-4 border-start border-primary border-4 text-center h-100">
+                        <div class="text-muted small fw-bold mb-2">APPLICATIONS</div>
+                        <h2 class="fw-bold text-white mb-0">{{ total_applications|default:"0" }}</h2>
+                        <small class="text-success mt-2"><i class="fas fa-arrow-up"></i> Live Tracking</small>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card p-4 border-start border-success border-4 text-center h-100">
+                        <div class="text-muted small fw-bold mb-2">AI SCREENED</div>
+                        <h2 class="fw-bold text-white mb-0">{{ ai_screened_pct|default:"0" }}%</h2>
+                        <small class="text-success mt-2"><i class="fas fa-robot"></i> Automated</small>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card p-4 border-start border-warning border-4 text-center h-100">
+                        <div class="text-muted small fw-bold mb-2">PENDING REVIEWS</div>
+                        <h2 class="fw-bold text-white mb-0">{{ pending_reviews|default:"0" }}</h2>
+                        <small class="text-warning mt-2"><i class="fas fa-clock"></i> Action Needed</small>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="card p-4 border-start border-info border-4 text-center h-100">
+                        <div class="text-muted small fw-bold mb-2">PLACEMENTS</div>
+                        <h2 class="fw-bold text-white mb-0">{{ placements|default:"0" }}</h2>
+                        <small class="text-info mt-2"><i class="fas fa-check-circle"></i> Hired</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8 mb-4">
+                    <div class="card p-4 h-100">
+                        <h5 class="fw-bold mb-4 text-white">Recruitment Velocity</h5>
+                        <canvas id="velocityChart" height="120"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card p-4 h-100">
+                        <h5 class="fw-bold mb-4 text-white">Skill Demand</h5>
+                        <canvas id="skillChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    new Chart(document.getElementById('velocityChart'), {
+                        type: 'line',
+                        data: {
+                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                            datasets: [{
+                                label: 'Candidates Processed',
+                                data: [12, 19, 15, 25, 30],
+                                borderColor: '#6366f1',
+                                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                borderWidth: 3, fill: true, tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true, plugins: { legend: { display: false } },
+                            scales: {
+                                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                            }
+                        }
+                    });
+
+                    new Chart(document.getElementById('skillChart'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Tech', 'Management', 'Design'],
+                            datasets: [{
+                                data: [65, 20, 15],
+                                backgroundColor: ['#6366f1', '#a855f7', '#ec4899'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: { cutout: '75%', plugins: { legend: { position: 'bottom', labels: {color: '#94a3b8'} } } }
+                    });
+                });
+            </script>
+            {% endblock %}
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

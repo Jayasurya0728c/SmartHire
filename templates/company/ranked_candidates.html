@@ -1,0 +1,90 @@
+{% extends 'company/company_index.html' %}
+{% block body %}
+
+<div class="container mt-5" id="a">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white fw-bold">🏆 AI Leaderboard: {{ test.Name }}</h2>
+        <a href="/myapp/company_exam_list/" class="btn btn-outline-light fw-bold">⬅ Back to Exams</a>
+    </div>
+
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0 text-center align-middle">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Candidate</th>
+                            <th>Base Score</th>
+                            <th>AI Penalties</th>
+                            <th>Final Score</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in data %}
+                        <tr>
+                            <td><h4 class="mb-0 fw-bold text-primary">#{{ forloop.counter }}</h4></td>
+
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <img src="{{ i.user.Photo }}" class="rounded-circle me-3 border" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <div class="text-start">
+                                        <h6 class="mb-0 fw-bold" style="color: #000000 !important; font-size: 16px;">{{ i.user.Name }}</h6>
+                                        <small style="color: #4B5563 !important; font-weight: 500;">{{ i.user.Email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>{{ i.base_score }}%</td>
+                            <td class="text-danger fw-bold">-{{ i.penalty }} ({{ i.violations }} flags)</td>
+                            <td><h5 class="mb-0 fw-bold text-success">{{ i.final_score }}%</h5></td>
+
+                            <td>
+                                <a href="/myapp/company_view_activity/{{ test.id }}/{{ i.user.id }}/" class="btn btn-sm btn-outline-primary mb-1 fw-bold">📹 Activity</a>
+
+                                <a href="/myapp/generate_candidate_ai_report/{{ i.user.id }}/{{ test.id }}/" class="btn btn-sm btn-dark mb-1 shadow-sm fw-bold">🤖 AI Insights</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <h4>No candidates have completed this exam yet.</h4>
+                                <p>Once students finish the test on the app, they will appear here.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {% if data %}
+    <div class="card mt-4 border-success shadow-sm mb-5">
+        <div class="card-body bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0 text-success fw-bold">Hire Top Candidates</h5>
+                <small class="text-muted">Automatically place the best performers and send offer emails.</small>
+            </div>
+
+            <div class="d-flex align-items-center">
+
+                <a href="/myapp/download_placed_candidates/{{ test.id }}/" class="btn btn-outline-dark fw-bold me-3">
+                    📥 Download Placed CSV
+                </a>
+
+                <form action="/myapp/company_place_students/{{ test.id }}/" method="POST" class="d-flex align-items-center mb-0">
+                    {% csrf_token %}
+                    <label class="me-2 fw-bold text-dark">Top:</label>
+                    <input type="number" name="num_students" min="1" max="{{ data|length }}" value="1" class="form-control me-3 border-secondary" style="width: 80px;" required>
+                    <button type="submit" class="btn btn-success fw-bold">Hire Now 🎉</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

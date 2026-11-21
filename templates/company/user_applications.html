@@ -1,0 +1,86 @@
+{% extends 'company/company_index.html' %}
+{% block body %}
+
+<div class="container-fluid mt-4" id="a">
+    <h2 class="mb-4 text-white fw-bold">Candidate Applications</h2>
+
+    <div class="card shadow-sm border-0 h-100" style="background-color: #1E293B; border-radius: 15px;">
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0" style="--bs-table-bg: transparent; color: white;">
+                    <thead style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                        <tr>
+                            <th class="text-white-50 text-uppercase border-0" style="font-size: 0.8rem; letter-spacing: 1px;">#</th>
+                            <th class="text-white-50 text-uppercase border-0" style="font-size: 0.8rem; letter-spacing: 1px;">Date</th>
+                            <th class="text-white-50 text-uppercase border-0" style="font-size: 0.8rem; letter-spacing: 1px;">Candidate</th>
+                            <th class="text-white-50 text-uppercase border-0" style="font-size: 0.8rem; letter-spacing: 1px;">Position</th>
+                            <th class="text-white-50 text-uppercase text-center border-0" style="font-size: 0.8rem; letter-spacing: 1px;">Status</th>
+                            <th class="text-white-50 text-uppercase text-center border-0" style="font-size: 0.8rem; letter-spacing: 1px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in data %}
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background-color 0.2s;">
+                            <td class="text-white border-0 py-3">{{ forloop.counter }}</td>
+                            <td class="text-white-50 border-0 py-3">{{ i.Date|date:"M d, Y" }}</td>
+
+                            <td class="border-0 py-3">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ i.USERS.Photo }}" alt="{{ i.USERS.Name }}" class="rounded-circle me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover; border: 2px solid rgba(255,255,255,0.1);">
+                                    <div>
+                                        <div class="text-white fw-bold" style="font-size: 1.05rem;">{{ i.USERS.Name }}</div>
+                                        <div class="text-white-50" style="font-size: 0.85rem;">{{ i.USERS.Email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="text-white border-0 py-3">{{ i.VACANCY.Position }}</td>
+
+                            <td class="text-center border-0 py-3">
+                                {% if i.Status == 'pending' %}
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="/myapp/approve_vacancy_request/{{ i.id }}" class="btn btn-sm btn-success rounded-pill px-3 shadow-none fw-bold">Approve</a>
+                                        <a href="/myapp/reject_vacancy_request/{{ i.id }}" class="btn btn-sm btn-danger rounded-pill px-3 shadow-none fw-bold">Reject</a>
+                                    </div>
+                                {% elif i.Status == 'Approved' %}
+                                    <span class="badge bg-success bg-opacity-25 text-success px-3 py-2 rounded-pill border border-success border-opacity-25"><i class="fas fa-check-circle me-1"></i> Approved</span>
+                                {% elif i.Status == 'Placed' %}
+                                    <span class="badge bg-info bg-opacity-25 text-info px-3 py-2 rounded-pill border border-info border-opacity-25"><i class="fas fa-trophy me-1"></i> Hired!</span>
+                                {% else %}
+                                    <span class="badge bg-danger bg-opacity-25 text-danger px-3 py-2 rounded-pill border border-danger border-opacity-25"><i class="fas fa-times-circle me-1"></i> {{ i.Status }}</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center border-0 py-3">
+                                <div class="d-flex justify-content-center gap-2">
+                                    {% if i.Status == 'Approved' or i.Status == 'Placed' %}
+                                        <a href="/myapp/chat1/{{ i.USERS.AUTHUSER.id }}" class="btn btn-sm rounded-pill px-3 fw-bold" style="background-color: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.4);">
+                                            <i class="fas fa-comment-dots"></i> Chat
+                                        </a>
+                                    {% elif i.Status == 'Rejected' %}
+                                        <!-- OVERRIDE BUTTON INJECTED HERE -->
+                                        <a href="/myapp/approve_vacancy_request/{{ i.id }}" class="btn btn-sm text-white shadow-sm" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); border: none; border-radius: 10px; padding: 6px 15px; font-weight: 600;">
+                                            <i class="fas fa-user-check me-1"></i> Override
+                                        </a>
+                                    {% else %}
+                                        <span class="text-white-50" style="font-size: 0.85rem;">-</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-white-50 py-5 border-0">
+                                <i class="fas fa-folder-open mb-3" style="font-size: 2rem; opacity: 0.5;"></i><br>
+                                No applications found for your vacancies yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

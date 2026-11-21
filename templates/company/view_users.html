@@ -1,0 +1,137 @@
+{% extends 'company/company_index.html' %}
+{% block body %}
+
+<div class="container mt-5">
+
+<h2 class="mb-4">Users</h2>
+
+<table id="registrationTable" class="table table-striped table-bordered">
+
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Post</th>
+<th>Place</th>
+<th>State</th>
+<th>Pincode</th>
+<th>Photo</th>
+<th>DOB</th>
+<th>CV</th>
+<th>AI Score</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for i in data %}
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>{{ i.Name }}</td>
+
+<td>{{ i.Email }}</td>
+
+<td>{{ i.Phone }}</td>
+
+<td>{{ i.Post }}</td>
+
+<td>{{ i.Place }}</td>
+
+<td>{{ i.State }}</td>
+
+<td>{{ i.Pincode }}</td>
+
+<td>
+<img src="{{ i.Photo }}" height="80" width="80">
+</td>
+
+<td>{{ i.DOB }}</td>
+
+<td>
+<a href="{{ i.CV }}" class="btn btn-primary btn-sm">
+View
+</a>
+</td>
+
+<td>
+
+<span class="badge
+{% if i.ai_focus_level == 'Focused' %}
+badge-success
+{% elif i.ai_focus_level == 'Active' %}
+badge-warning
+{% else %}
+badge-danger
+{% endif %}
+"
+style="font-size:15px; padding:8px;"
+title="Focus: {{ i.ai_focus_level }} | Avg Mark: {{ i.avg_mark }} | {{ i.ai_reason }}">
+
+{{ i.ai_overall_score }}
+
+</span>
+
+<br>
+
+<small class="text-muted">
+{{ i.ai_focus_level }}
+</small>
+
+</td>
+
+<td>
+
+<a href="/myapp/company_view_activity/{{ vid }}/{{ i.id }}" 
+class="btn btn-info btn-sm">
+Activities
+</a>
+
+{% if forloop.counter <= 5 %}
+<br><br>
+<a href="/myapp/company_add_shortlist/{{ vid }}/{{ i.id }}" 
+class="btn btn-success btn-sm">
+Shortlist
+</a>
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+<style>
+
+.badge{
+cursor:help;
+}
+
+.badge-success{
+background-color:#28a745;
+color:white;
+}
+
+.badge-warning{
+background-color:#ffc107;
+color:black;
+}
+
+.badge-danger{
+background-color:#dc3545;
+color:white;
+}
+
+</style>
+
+{% endblock %}

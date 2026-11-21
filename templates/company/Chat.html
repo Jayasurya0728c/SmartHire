@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Hire | Live Chat</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="/static/chat_style/jquery.min.js"></script>
+    <script src="/static/chatstyle/jquery.mCustomScrollbar.min.js"></script>
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a; /* Dark Slate Base */
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.12) 0px, transparent 50%);
+            overflow: hidden;
+        }
+
+        /* --- THE GLASS CHAT CARD --- */
+        .chat-card {
+            height: 85vh;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        .chat-header {
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+        }
+
+        .chat-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* Custom Scrollbar */
+        .chat-body::-webkit-scrollbar { width: 6px; }
+        .chat-body::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
+
+        .chat-footer {
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
+        }
+
+        /* --- PULSING ONLINE DOT --- */
+        .pulse-online {
+            height: 10px; width: 10px;
+            background-color: #10B981; /* Emerald Green */
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse-green 2s infinite;
+            margin-right: 6px;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* --- INPUT STYLING --- */
+        .type_msg {
+            background-color: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            color: white !important;
+            border-radius: 15px 0 0 15px !important;
+            resize: none;
+            box-shadow: none !important;
+        }
+        .type_msg::placeholder { color: rgba(255,255,255,0.4); }
+        .type_msg:focus { border-color: #6366f1 !important; }
+
+        .send_btn {
+            border-radius: 0 15px 15px 0 !important;
+            background: linear-gradient(135deg, #6366f1, #a855f7) !important;
+            border: 0 !important;
+            color: white !important;
+            cursor: pointer;
+            padding: 0 25px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .send_btn:hover {
+            box-shadow: 0 0 15px rgba(99,102,241,0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container h-100 d-flex justify-content-center align-items-center">
+        <div class="col-md-10 col-lg-8">
+            
+            <a href="/myapp/view_vacancy_request/" class="btn btn-sm rounded-pill mb-3" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.1);">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+
+            <div class="chat-card">
+                
+                <div class="chat-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <div id="iiim" class="me-3">
+                            <img src="{{ photo }}" class="rounded-circle shadow-sm" style="width: 55px; height: 55px; object-fit: cover; border: 2px solid #6366f1;">
+                        </div>
+                        <div id="nnnm">
+                            <input type="hidden" name="d" id="d" value="{{ toid }}" />
+                            <div class="text-white fw-bold mb-0" style="font-size: 1.2rem;">{{ name }}</div>
+                            <div class="d-flex align-items-center mt-1">
+                                <span class="pulse-online"></span>
+                                <span class="text-success small fw-bold" style="letter-spacing: 0.5px;">Active Now</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm rounded-circle shadow-none" style="background: rgba(255,255,255,0.1); color: white; width: 40px; height: 40px;">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+                  
+                <div class="chat-body" id="chat-box">
+                    <div id="send1">
+                        </div>
+                </div>
+
+                <div class="chat-footer">
+                    <div class="input-group" style="height: 55px;">
+                        <textarea id="textfield" class="form-control type_msg py-3" placeholder="Type your message here..."></textarea>
+                        <button id="button" class="input-group-text send_btn">
+                            <i class="fas fa-paper-plane me-2"></i> Send
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(document).ready(function(){
+        repeatEverySecond();
+    });
+
+    // POLLING FUNCTION
+    function test() {
+        $.ajax({
+            url: "/myapp/chat_view/",
+            type: "GET",
+            data: {},
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function(dat) {
+                var data = dat["data"];
+                var name = dat["name"];
+                var photo = dat["photo"];
+                var user_lid = dat["toid"];
+                
+                // Keep Header Updated
+                $("#iiim").html("<img src='"+photo+"' class='rounded-circle shadow-sm' style='width: 55px; height: 55px; object-fit: cover; border: 2px solid #6366f1;'>");
+                $("#nnnm").html("<input type='hidden' id='d' value='"+user_lid+"'><div class='text-white fw-bold mb-0' style='font-size: 1.2rem;'>" + name + "</div><div class='d-flex align-items-center mt-1'><span class='pulse-online'></span><span class='text-success small fw-bold' style='letter-spacing: 0.5px;'>Active Now</span></div>");
+
+                // Clear and rebuild messages
+                $("#send1").text("");
+                var len = data.length;
+                
+                for(var i=0; i<len; i++) {
+                    var type = data[i]['from'];
+                    var mesg = data[i]['message'];
+
+                    if (type != user_lid) {
+                        // SENDER BUBBLE (Right Side - Purple Gradient)
+                        $("#send1").append(
+                            "<div class='d-flex justify-content-end mb-4'>" +
+                                "<div style='background: linear-gradient(135deg, #6366f1, #a855f7); color: white; padding: 12px 18px; border-radius: 20px 20px 0 20px; box-shadow: 0 5px 15px rgba(99,102,241,0.2); max-width: 75%; word-wrap: break-word; font-size: 0.95rem;'>" +
+                                    mesg +
+                                "</div>" +
+                            "</div>"
+                        );
+                    } else {
+                        // RECEIVER BUBBLE (Left Side - Dark Glass)
+                        $("#send1").append(
+                            "<div class='d-flex justify-content-start mb-4'>" +
+                                "<img src='"+photo+"' class='rounded-circle me-2 mt-auto mb-auto' style='width: 30px; height: 30px; object-fit: cover;'>" +
+                                "<div style='background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.05); color: #cbd5e1; padding: 12px 18px; border-radius: 20px 20px 20px 0; max-width: 75%; word-wrap: break-word; font-size: 0.95rem;'>" +
+                                    mesg +
+                                "</div>" +
+                            "</div>"
+                        );
+                    }
+                }
+            },
+            error: function(ts) {
+                // Ignore silent polling errors
+            }
+        });
+    }
+
+    // SEND MESSAGE FUNCTION
+    $("#button").click(function() {
+        var msg = $("#textfield").val().trim();
+        
+        if (msg === "") return; // Prevent empty sends
+        
+        // Immediately clear input for smooth UX
+        $("#textfield").val("");
+
+        $.ajax({
+            url: "/myapp/chat_send/" + encodeURIComponent(msg),
+            type: "GET",
+            data: {},
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function(dat) {
+                test(); // Instantly refresh chat after sending
+            },
+            error: function(ts) {
+                alert("Error sending message.");
+            }
+        });
+    });
+
+    // Allow pressing "Enter" to send message
+    $("#textfield").keypress(function (e) {
+        if(e.which === 13 && !e.shiftKey) {
+            e.preventDefault();
+            $("#button").click();
+        }
+    });
+
+    function repeatEverySecond() {
+        setInterval(test, 1000);
+    }
+</script>
+
+</body>
+</html>

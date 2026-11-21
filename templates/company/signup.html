@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Smart Hire | Join the Future</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Neo-Minimalist AI Dark Theme */
+        :root {
+            --bg-base: #050505;
+            --surface: #0a0a0a;
+            --border: #1f1f1f;
+            --border-hover: #333333;
+            --text-main: #ededed;
+            --text-muted: #888888;
+            --accent: #ffffff;
+            --accent-glow: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 50% 0%, rgba(50, 60, 255, 0.08), transparent 40%),
+                radial-gradient(circle at 80% 100%, rgba(150, 50, 255, 0.05), transparent 40%);
+        }
+
+        .auth-container {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 48px;
+            width: 100%;
+            max-width: 750px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            margin: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle top glow line */
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .header-section {
+            margin-bottom: 40px;
+        }
+
+        .header-section h2 {
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            font-size: 28px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-section p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="password"],
+        textarea {
+            background-color: var(--bg-base);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #444;
+        }
+
+        input:hover, textarea:hover {
+            border-color: var(--border-hover);
+        }
+
+        input:focus, textarea:focus {
+            border-color: #555;
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        input[type="file"] {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 8px 0;
+        }
+
+        input[type="file"]::file-selector-button {
+            background: var(--border);
+            border: 1px solid var(--border-hover);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 12px;
+            transition: 0.2s;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #2a2a2a;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            grid-column: span 2;
+        }
+
+        .checkbox-group input {
+            appearance: none;
+            width: 16px; height: 16px;
+            border: 1px solid var(--border-hover);
+            border-radius: 4px;
+            background: var(--bg-base);
+            margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .checkbox-group input:checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            text-transform: none;
+            font-size: 13px;
+            letter-spacing: 0;
+        }
+
+        .checkbox-group a {
+            color: var(--text-main);
+            text-decoration: underline;
+            text-decoration-color: #444;
+            text-underline-offset: 4px;
+        }
+
+        .submit-btn {
+            background-color: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            grid-column: span 2;
+            margin-top: 10px;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.15);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        .footer-link {
+            text-align: center;
+            grid-column: span 2;
+            margin-top: 16px;
+        }
+
+        .footer-link a {
+            color: var(--text-muted);
+            font-size: 13px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .footer-link a:hover {
+            color: var(--text-main);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width, .submit-btn, .checkbox-group, .footer-link { grid-column: span 1; }
+            .auth-container { padding: 32px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+
+        <div class="header-section">
+            <h2>Register Company</h2>
+            <p>Deploy AI-driven recruitment on the Smart Hire platform.</p>
+        </div>
+
+        <form method="POST" action="/myapp/company_signup_post/" id="register-form" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="Company_name">Company Name</label>
+                    <input type="text" name="Company_name" id="Company_name" placeholder="Acme Corp" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="Company_id">Registration ID</label>
+                    <input type="text" name="Company_id" id="Company_id" placeholder="REG-12345" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="Email">Work Email</label>
+                    <input type="email" name="Email" id="Email" placeholder="admin@company.com" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="number" name="phone" id="phone" placeholder="+1 (555) 000-0000" required/>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="License">License Number (10 Digits)</label>
+                    <input type="text" name="License" id="License" placeholder="0000000000"
+                           pattern="\d{10}"
+                           title="License number must be exactly 10 digits."
+                           maxlength="10"
+                           minlength="10"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                           required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="Post">Post Office / Area</label>
+                    <input type="text" name="Post" id="Post" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="City">City</label>
+                    <input type="text" name="City" id="City" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="State">State</label>
+                    <input type="text" name="State" id="State" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="Pincode">Pincode</label>
+                    <input type="number" name="Pincode" id="Pincode" required/>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="About">Company Overview</label>
+                    <textarea name="About" id="About" rows="2" placeholder="Briefly describe your operations..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="Photo">Company Logo</label>
+                    <input type="file" name="Photo" id="Photo" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Create Password</label>
+                    <input type="password" name="password" id="password" placeholder="••••••••" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="password2">Confirm Password</label>
+                    <input type="password" name="password2" id="password2" placeholder="••••••••" required/>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" name="agree-term" id="agree-term" required/>
+                    <label for="agree-term">I accept the <a href="#">Terms of Service</a></label>
+                </div>
+
+                <button type="submit" name="signup" id="signup" class="submit-btn">Create Account</button>
+
+                <div class="footer-link">
+                    <a href="/myapp/login_get/">Already registered? Sign in →</a>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

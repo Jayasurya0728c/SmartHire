@@ -1,0 +1,192 @@
+{% extends 'company/company_index.html' %}
+{% block body %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container mt-5">
+
+    {% for d in data %}
+    <div class="text-center mb-5">
+        <h2 class="display-6 fw-bold">Performance Analytics Dashboard</h2>
+        <p class="text-muted">Candidate: <strong>{{ d.Name }}</strong></p>
+    </div>
+    {% endfor %}
+
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-primary text-white py-3"><h5 class="mb-0">🎙️ AI Confidence Analysis</h5></div>
+                <div class="card-body"><div style="height: 250px;"><canvas id="confidenceChart"></canvas></div></div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-danger text-white py-3"><h5 class="mb-0">👤 Face Violations</h5></div>
+                <div class="card-body"><div style="height: 250px;"><canvas id="faceChart"></canvas></div></div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-warning text-dark py-3"><h5 class="mb-0">📱 Object Violations</h5></div>
+                <div class="card-body"><div style="height: 250px;"><canvas id="objectChart"></canvas></div></div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-header bg-info text-dark py-3"><h5 class="mb-0">👀 Movement Counts</h5></div>
+                <div class="card-body"><div style="height: 250px;"><canvas id="movementChart"></canvas></div></div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <div class="mb-5">
+        <h3 class="mb-4 fw-bold">Candidate Test Results & Audio Review</h3>
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered shadow-sm">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th>User Transcript</th>
+                        <th>Review Recording</th>
+                        <th>Mark</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    {% for i in results %}
+                    <tr>
+                        <td class="align-middle text-center">{{ forloop.counter }}</td>
+
+                        <td class="align-middle">
+                            <strong>{{ i.QUESTIONS.questions }}</strong><br>
+                            <small class="text-muted">Target: {{ i.QUESTIONS.Answer }}</small>
+                        </td>
+
+                        <td class="align-middle italic">"{{ i.Answer }}"</td>
+
+                        <td class="align-middle text-center" style="min-width: 250px;">
+                            {% if i.QUESTIONS.type|lower == 'audio' %}
+                                <audio controls style="height: 35px; width: 100%;">
+                                    <source src="/media/{{ i.USERS_id }}_{{ i.QUESTIONS_id }}.aac" type="audio/aac">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            {% else %}
+                                <span class="text-muted small">N/A (MCQ)</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="align-middle text-center">
+                            <div id="badge-container-{{ i.id }}" class="mb-2">
+                                {% if i.QUESTIONS.type|lower == 'audio' %}
+
+                                    {% if i.Mark == '1' or i.Mark == 1 %}
+                                        <span class="badge bg-success">CORRECT</span>
+                                    {% elif i.Mark == '0' or i.Mark == 0 %}
+                                        <span class="badge bg-danger">WRONG</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">PENDING REVIEW</span>
+                                    {% endif %}
+
+                                {% else %}
+
+                                    {% if i.Mark == '1' or i.Mark == 1 %}
+                                        <span class="badge bg-success">CORRECT</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">WRONG</span>
+                                    {% endif %}
+
+                                {% endif %}
+                            </div>
+
+                            {% if i.QUESTIONS.type|lower == 'audio' %}
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-success" onclick="updateMark({{ i.id }}, '1')" title="Mark as Correct">✔</button>
+                                <button type="button" class="btn btn-outline-danger" onclick="updateMark({{ i.id }}, '0')" title="Mark as Wrong">✖</button>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const options = { responsive: true, maintainAspectRatio: false };
+    new Chart(document.getElementById('confidenceChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Voice', 'Accuracy', 'Overall'],
+            datasets: [{ label: '%', data: [{{ acoustic_score|default:0 }}, {{ ai_score|default:0 }}, {{ overall_score|default:0 }}], backgroundColor: ['#fd7e14', '#0d6efd', '#198754'] }]
+        },
+        options: { ...options, scales: { y: { beginAtZero: true, max: 100 } } }
+    });
+
+    new Chart(document.getElementById('faceChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['No Face', 'Multi Face', 'Invalid'],
+            datasets: [{ data: [{{ no_face|default:0 }}, {{ multi_face|default:0 }}, {{ invalid_face|default:0 }}], backgroundColor: ['#adb5bd', '#dc3545', '#ffc107'] }]
+        },
+        options: options
+    });
+
+    new Chart(document.getElementById('objectChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Phone', 'Laptop', 'Both'],
+            datasets: [{ data: [{{ obj_phone|default:0 }}, {{ obj_lap|default:0 }}, {{ obj_both|default:0 }}], backgroundColor: ['#dc3545', '#0d6efd', '#fd7e14'] }]
+        },
+        options: options
+    });
+
+    new Chart(document.getElementById('movementChart'), {
+        type: 'bar',
+        data: {
+            labels: ['H-L', 'H-R', 'E-L', 'E-R'],
+            datasets: [{ label: 'Count', data: [{{ headl|default:0 }}, {{ headr|default:0 }}, {{ eyel|default:0 }}, {{ eyer|default:0 }}], backgroundColor: ['#6f42c1', '#198754', '#0dcaf0', '#f9c851'] }]
+        },
+        options: options
+    });
+</script>
+
+<script>
+    function updateMark(resultId, newMark) {
+        const container = document.getElementById('badge-container-' + resultId);
+        container.innerHTML = '<span class="badge bg-secondary">Updating...</span>';
+
+        fetch('/myapp/update_manual_mark/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'rid': resultId,
+                'mark': newMark
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                if (newMark === '1') {
+                    container.innerHTML = '<span class="badge bg-success">CORRECT</span>';
+                } else {
+                    container.innerHTML = '<span class="badge bg-danger">WRONG</span>';
+                }
+            } else {
+                alert("Failed to update mark on server.");
+                container.innerHTML = '<span class="badge bg-warning text-dark">ERROR</span>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            container.innerHTML = '<span class="badge bg-warning text-dark">ERROR</span>';
+        });
+    }
+</script>
+
+{% endblock %}
